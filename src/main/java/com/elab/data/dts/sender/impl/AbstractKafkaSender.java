@@ -74,19 +74,21 @@ public abstract class AbstractKafkaSender implements ISendProducer {
             key = tableData.getTableName() + id;
         }
 
-        ProducerRecord<String, String> kafkaMessage = new ProducerRecord<String, String>(defaultTopic,
-                partition, System.currentTimeMillis(), key, JSON.toJSONString(tableData));
-        try {
-            ListenableFuture<SendResult<String, String>> listenableFuture = kafkaTemplate.send(kafkaMessage);
-            SendResult<String, String> sendResult = listenableFuture.get();
-            RecordMetadata recordMetadata = sendResult.getRecordMetadata();
-            // 默认不报错,应该就是发送成功了
-            listenableFuture.completable();
-            String date = DateFormatUtils.ISO_8601_EXTENDED_DATETIME_FORMAT.format(tableData.getSourceTimestamp() * 1000);
-            logger.debug("推送kafka成功..[" + defaultTopic + "] 数据产生的来源时间:[" + date + "]");
-        } catch (Exception e) {
-            logger.error("消息发送失败", e);
-        }
+        System.out.println(JSON.toJSONString(tableData));
+
+//        ProducerRecord<String, String> kafkaMessage = new ProducerRecord<String, String>(defaultTopic,
+//                partition, System.currentTimeMillis(), key, JSON.toJSONString(tableData));
+//        try {
+//            ListenableFuture<SendResult<String, String>> listenableFuture = kafkaTemplate.send(kafkaMessage);
+//            SendResult<String, String> sendResult = listenableFuture.get();
+//            RecordMetadata recordMetadata = sendResult.getRecordMetadata();
+//            // 默认不报错,应该就是发送成功了
+//            listenableFuture.completable();
+//            String date = DateFormatUtils.ISO_8601_EXTENDED_DATETIME_FORMAT.format(tableData.getSourceTimestamp() * 1000);
+//            logger.debug("推送kafka成功..[" + defaultTopic + "] 数据产生的来源时间:[" + date + "]");
+//        } catch (Exception e) {
+//            logger.error("消息发送失败", e);
+//        }
     }
 
     protected Integer getPartitionIndex(String tableName, String id, Integer partitionCount) {

@@ -228,7 +228,7 @@ public class DataParseUtils {
 
     /**
      * 解析DDL语句对象
-     *
+     * TODO: 解析的有问题 待修复
      * @param record
      * @return
      */

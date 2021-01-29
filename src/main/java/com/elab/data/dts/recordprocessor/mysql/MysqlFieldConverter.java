@@ -121,25 +121,23 @@ public class MysqlFieldConverter implements FieldConverter {
     }
 
     static class TimestampStringAdapter implements DataAdapter {
-
-        static String[] MILLIS_PREFIX = new String[]{"", "0", "00", "000", "0000", "00000", "000000"};
-
+//        static String[] MILLIS_PREFIX = new String[]{"", "0", "00", "000", "0000", "00000", "000000"};
         @Override
         public FieldValue getFieldValue(Object data) {
             FieldValue fieldValue = new FieldValue();
             if (null != data) {
-                StringBuilder timestampBuilder = new StringBuilder(64);
-
+//                StringBuilder timestampBuilder = new StringBuilder();
                 Timestamp timestamp = (Timestamp) data;
+                fieldValue.setValue(timestamp.getTimestamp().toString().getBytes(US_ASCII));
 
-                timestampBuilder.append(timestamp.getTimestamp());
-                if (null != timestamp.getMillis() && timestamp.getMillis() > 0) {
-                    timestampBuilder.append('.');
-                    String millis = java.lang.Integer.toString(timestamp.getMillis());
-                    timestampBuilder.append(MILLIS_PREFIX[6 - millis.length()]).append(millis);
-                }
+//                timestampBuilder.append(timestamp.getTimestamp());
+//                if (null != timestamp.getMillis() && timestamp.getMillis() > 0) {
+//                    timestampBuilder.append('.');
+//                    String millis = java.lang.Integer.toString(timestamp.getMillis());
+//                    timestampBuilder.append(MILLIS_PREFIX[6 - millis.length()]).append(millis);
+//                }
 
-                fieldValue.setValue(timestampBuilder.toString().getBytes(US_ASCII));
+//                fieldValue.setValue(timestampBuilder.toString().getBytes(US_ASCII));
             }
             fieldValue.setEncoding("ASCII");
             return fieldValue;

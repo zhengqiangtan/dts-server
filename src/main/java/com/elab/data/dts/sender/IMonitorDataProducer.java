@@ -17,21 +17,21 @@ public interface IMonitorDataProducer {
      * @param e   异常信息
      * @param obj 相关的数据
      */
-    public void sendError(Throwable e, Object obj);
+    void sendError(Throwable e, Object obj);
 
     /**
      * 发送表情况数据
      *
      * @param tableData
      */
-    public void sendTableInfo(TableData tableData);
+    void sendTableInfo(TableData tableData);
 
     /**
      * 发送ddl语句
      *
      * @param ddlData
      */
-    public void sendDDLInfo(DDLData ddlData);
+    void sendDDLInfo(DDLData ddlData);
 
 
 }

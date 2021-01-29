@@ -15,6 +15,7 @@ public class DMLData extends TableData {
      * 字段数据信息
      */
     private Map<String, FieldData> fieldDataMap;
+
     /**
      * 变更字段
      */
@@ -48,4 +49,16 @@ public class DMLData extends TableData {
     public void setId(String id) {
         this.id = id;
     }
+
+
+    @Override
+    public String toString() {
+        return "DMLData{" +
+                "fieldDataMap=" + fieldDataMap +
+                ", changeFieldList=" + changeFieldList +
+                ", id='" + id + '\'' +
+                '}';
+    }
+
+
 }

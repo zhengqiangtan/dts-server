@@ -26,8 +26,8 @@ public class RecordConsumerListener implements RecordListener {
     @Autowired
     private List<AbstractEventProcess> eventProcessList;
 
-    @Autowired
-    private DTSProperties dtsProperties;
+//    @Autowired
+//    private DTSProperties dtsProperties;
 
     @Override
     public void consume(UserRecord userRecord) {
