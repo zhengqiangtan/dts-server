@@ -35,7 +35,7 @@ public class RecordGenerator implements Runnable, Closeable {
     private volatile Checkpoint toCommitCheckpoint = null;
     private final MetaStoreCenter metaStoreCenter = new MetaStoreCenter();
     private final AtomicBoolean useCheckpointConfig;
-    private final ConsumerSubscribeMode subscribeMode;
+    private final ConsumerSubscribeMode subscribeMode; // 消费者消费类型：订阅、指派
     private final long tryBackTimeMS;
     private volatile boolean existed;
 
@@ -51,6 +51,7 @@ public class RecordGenerator implements Runnable, Closeable {
         this.subscribeMode = parseConsumerSubscribeMode(properties.getProperty(Names.SUBSCRIBE_MODE_NAME, "assign"));
         this.useCheckpointConfig = new AtomicBoolean(StringUtils.equalsIgnoreCase(properties.getProperty(Names.USE_CONFIG_CHECKPOINT_NAME), "true"));
         existed = false;
+        // 使用本地文件作为FileStore(默认)
         metaStoreCenter.registerStore(LOCAL_FILE_STORE_NAME, new LocalFileMetaStore(LOCAL_FILE_STORE_NAME));
         log.info("RecordGenerator: try time [" + tryTime + "], try backTimeMS [" + tryBackTimeMS + "]");
     }
@@ -69,7 +70,6 @@ public class RecordGenerator implements Runnable, Closeable {
         while (!existed) {
             EtlRecordProcessor recordProcessor = context.getRecordProcessor();
             try {
-
                 while (!existed) {
                     // kafka consumer is not threadsafe, so if you want commit checkpoint to kafka, commit it in same thread
                     mayCommitCheckpoint();
@@ -194,6 +194,10 @@ public class RecordGenerator implements Runnable, Closeable {
         existed = true;
     }
 
+
+    /**
+     * 消费类型定义
+     */
     private static enum ConsumerSubscribeMode {
         ASSIGN,
         SUBSCRIBE,

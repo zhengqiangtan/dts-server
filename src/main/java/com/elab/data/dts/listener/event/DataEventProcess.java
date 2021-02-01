@@ -17,7 +17,7 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * 修改事件触发
+ * 修改事件触发(这里只包含更删改操作类型)
  *
  * @author ： liukx
  * @time ： 2020/9/23 - 14:15
@@ -47,8 +47,8 @@ public class DataEventProcess extends AbstractEventProcess {
     }
 
     @Override
-    protected boolean process0(TableData tableData) throws Exception {
-        logger.debug("数据来源时间:" + DateFormatUtils.ISO_8601_EXTENDED_DATETIME_FORMAT.format(tableData.getSourceTimestamp() * 1000) + " 得到的转换数据 : " + JSON.toJSONString(tableData));
+    protected boolean process0(TableData tableData) {
+        logger.debug("数据来源时间:{}, 得到的转换数据 {}: ", DateFormatUtils.ISO_8601_EXTENDED_DATETIME_FORMAT.format(tableData.getSourceTimestamp() * 1000), JSON.toJSONString(tableData));
         return true;
     }
 

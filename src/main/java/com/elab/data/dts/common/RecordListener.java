@@ -1,8 +1,5 @@
 package com.elab.data.dts.common;
 
-public  interface RecordListener {
-
-
-    public void consume(UserRecord record);
-
+public interface RecordListener {
+    void consume(UserRecord record);
 }

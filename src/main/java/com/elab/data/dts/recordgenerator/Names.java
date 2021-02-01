@@ -2,6 +2,9 @@ package com.elab.data.dts.recordgenerator;
 
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 
+/**
+ * DTS消费入参
+ */
 public class Names {
     // detail control
     public static final String TRY_TIME = "stream.tryTime";

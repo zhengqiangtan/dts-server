@@ -16,31 +16,20 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
 
-
 /**
- * This demo show how to resolve avro record deserialize from bytes
- * We will show how to print a column from deserialize record
+ * ETl记录处理器（解析DTS avro格式数据并对其反序列化）
  */
-public class EtlRecordProcessor implements  Runnable, Closeable {
+public class EtlRecordProcessor implements Runnable, Closeable {
     private static final Logger log = LoggerFactory.getLogger(EtlRecordProcessor.class);
     private final OffsetCommitCallBack offsetCommitCallBack;
     private volatile Checkpoint commitCheckpoint;
     private WorkThread commitThread;
-    public boolean offer(long timeOut, TimeUnit timeUnit, ConsumerRecord record) {
-        try {
-            return toProcessRecord.offer(record, timeOut, timeUnit);
-        } catch (Exception e) {
-            log.error("EtlRecordProcessor: offer record failed, record[" + record + "], cause " + e.getMessage(), e);
-            return false;
-        }
-    }
-
-    private final LinkedBlockingQueue<ConsumerRecord> toProcessRecord;
+    private final LinkedBlockingQueue<ConsumerRecord> toProcessRecord; //存储待处理记录
     private final AvroDeserializer fastDeserializer;
     private final Context context;
     private final Map<String, RecordListener> recordListeners = new HashMap<>();
-
     private volatile boolean existed = false;
+
     public EtlRecordProcessor(OffsetCommitCallBack offsetCommitCallBack, Context context) {
         this.offsetCommitCallBack = offsetCommitCallBack;
         this.toProcessRecord = new LinkedBlockingQueue<>(512);
@@ -49,6 +38,15 @@ public class EtlRecordProcessor implements  Runnable, Closeable {
         commitCheckpoint = new Checkpoint(null, -1, -1, "-1");
         commitThread = getCommitThread();
         commitThread.start();
+    }
+
+    public boolean offer(long timeOut, TimeUnit timeUnit, ConsumerRecord record) {
+        try {
+            return toProcessRecord.offer(record, timeOut, timeUnit);
+        } catch (Exception e) {
+            log.error("EtlRecordProcessor: offer record failed, record[" + record + "], cause " + e.getMessage(), e);
+            return false;
+        }
     }
 
 
@@ -89,7 +87,7 @@ public class EtlRecordProcessor implements  Runnable, Closeable {
         }
     }
 
-    // user define how to commit
+    // 用户定义如何来提交
     private void commit() {
         if (null != offsetCommitCallBack) {
             if (commitCheckpoint.getTopicPartition() != null && commitCheckpoint.getOffset() != -1) {
@@ -106,7 +104,7 @@ public class EtlRecordProcessor implements  Runnable, Closeable {
     }
 
     @Override
-    public  void close() {
+    public void close() {
         this.existed = true;
         commitThread.stop();
     }

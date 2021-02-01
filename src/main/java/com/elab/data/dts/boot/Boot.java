@@ -21,7 +21,9 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-
+/**
+ * DTS数据消费入口程序
+ */
 public class Boot {
     private static final Logger log = LoggerFactory.getLogger(Boot.class);
     private static final AtomicBoolean existed = new AtomicBoolean(false);
@@ -32,9 +34,6 @@ public class Boot {
     }
 
     public static void boot(Properties properties, Map<String, RecordListener> recordListeners) {
-        // first init log4j
-        // 使用SpringBoot的默认日志体系
-        // initLog4j();
         Util.require(null != recordListeners && !recordListeners.isEmpty(), "record listener required");
         Context context = getStreamContext(properties);
         // check config
@@ -46,16 +45,7 @@ public class Boot {
             etlRecordProcessor.registerRecordListener(k, v);
         });
         registerSignalHandler(context);
-        List<WorkThread> startStream = startWorker(etlRecordProcessor, recordGenerator);
-        // Spring 默认会启动容器,而
-//        while (!existed.get() ) {
-//            Util.sleepMS(1000);
-//        }
-//        log.info("StreamBoot: shutting down...");
-//        for (WorkThread workThread : startStream) {
-//            workThread.stop();
-//        }
-
+        startWorker(etlRecordProcessor, recordGenerator);
     }
 
     private static List<WorkThread> startWorker(EtlRecordProcessor etlRecordProcessor, RecordGenerator recordGenerator) {
@@ -82,7 +72,7 @@ public class Boot {
     }
 
     private static Context getStreamContext(Properties properties) {
-        Context ret =  new Context();
+        Context ret = new Context();
         return ret;
     }
 
@@ -93,9 +83,9 @@ public class Boot {
         String[] offsetAndTS = checkpoint.split("@");
         Checkpoint streamCheckpoint = null;
         if (offsetAndTS.length == 1) {
-            streamCheckpoint =  new Checkpoint(null, Long.valueOf(offsetAndTS[0]), -1, "");
+            streamCheckpoint = new Checkpoint(null, Long.valueOf(offsetAndTS[0]), -1, "");
         } else if (offsetAndTS.length >= 2) {
-            streamCheckpoint =  new Checkpoint(null, Long.valueOf(offsetAndTS[0]), Long.valueOf(offsetAndTS[1]), "");
+            streamCheckpoint = new Checkpoint(null, Long.valueOf(offsetAndTS[0]), Long.valueOf(offsetAndTS[1]), "");
         }
         return streamCheckpoint;
     }
@@ -131,19 +121,6 @@ public class Boot {
         Util.require(null != properties.getProperty(Names.KAFKA_BROKER_URL_NAME), "broker url should supplied");
     }
 
-//    private static Properties initLog4j() {
-//        Properties properties = new Properties();
-//        InputStream log4jInput = null;
-//        try {
-//            log4jInput = Thread.currentThread().getContextClassLoader().getResourceAsStream("log4j.properties");
-//            PropertyConfigurator.configure(log4jInput);
-//        } catch (Exception e) {
-//        } finally {
-//            swallowErrorClose(log4jInput);
-//        }
-//        return properties;
-//    }
-
 
     private static Properties loadConfig(String filePath) {
         Properties ret = new Properties();
@@ -153,7 +130,7 @@ public class Boot {
             ret.load(toLoad);
         } catch (Exception e) {
             throw new RuntimeException(e);
-        }  finally {
+        } finally {
             Util.swallowErrorClose(toLoad);
         }
         return ret;

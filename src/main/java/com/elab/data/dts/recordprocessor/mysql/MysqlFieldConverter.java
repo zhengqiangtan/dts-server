@@ -41,10 +41,10 @@ public class MysqlFieldConverter implements FieldConverter {
         DATA_ADAPTER[12] = new DateTimeAdapter(); //Type.DATETIME
         DATA_ADAPTER[13] = new YearAdapter(); //Type.YEAR
         DATA_ADAPTER[14] = new DateTimeAdapter(); //Type.DATETIME
-        DATA_ADAPTER[15] = new CharacterAdapter(); 	//Type.STRING
+        DATA_ADAPTER[15] = new CharacterAdapter();    //Type.STRING
         DATA_ADAPTER[16] = new NumberStringAdapter(); //Type.BIT
 
-        DATA_ADAPTER[255] = new GeometryAdapter(); 	//Type.GEOMETRY;
+        DATA_ADAPTER[255] = new GeometryAdapter();    //Type.GEOMETRY;
         DATA_ADAPTER[254] = new CharacterAdapter(); //Type.STRING;
         DATA_ADAPTER[253] = new CharacterAdapter(); //Type.STRING;
 
@@ -220,7 +220,7 @@ public class MysqlFieldConverter implements FieldConverter {
 
             FieldValue fieldValue = new FieldValue();
             if (null != data) {
-                DateTime dateTime = (DateTime)data;
+                DateTime dateTime = (DateTime) data;
 
                 // 判断是否是负数
                 int head = 0;

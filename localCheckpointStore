@@ -1,1 +1,1 @@
-{"groupID":"bitest","streamCheckpoint":[{"partition":0,"offset":10167208971,"topic":"cn_hangzhou_rm_bp1hddend5q83p03g_rdsdt_dtsacct","timestamp":1611836049,"info":"1611836049"}]}
+{"groupID":"bitest","streamCheckpoint":[{"partition":0,"offset":10157665942,"topic":"cn_hangzhou_rm_bp1hddend5q83p03g_rdsdt_dtsacct","timestamp":1611835471,"info":"1611835471"}]}

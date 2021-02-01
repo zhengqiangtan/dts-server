@@ -23,7 +23,6 @@ import java.util.Map;
  * @time ： 2020/9/23 - 14:16
  */
 public abstract class AbstractEventProcess {
-
     private Logger logger = LoggerFactory.getLogger(getClass());
 
     @Autowired(required = false)
@@ -50,6 +49,24 @@ public abstract class AbstractEventProcess {
      * @return
      */
     public abstract boolean subscription(Operation operation);
+    /**
+     * 业务回调处理
+     *
+     * @param tableData
+     * @return
+     * @throws Exception
+     */
+    protected abstract boolean process0(TableData tableData) throws Exception;
+
+    /**
+     * 解析数据
+     *
+     * @param record
+     * @return
+     */
+    protected abstract TableData parseTable(UserRecord record);
+
+
 
     /**
      * 处理表的业务数据,具体参考@Link AbstractEventProcess.processEvent()
@@ -60,7 +77,6 @@ public abstract class AbstractEventProcess {
      */
     protected boolean process(TableData tableData) throws Exception {
         // 实现数据过滤
-
         if (filterData(tableData)) {
             return false;
         }
@@ -99,23 +115,12 @@ public abstract class AbstractEventProcess {
         return false;
     }
 
+
     /**
-     * 业务回调处理
-     *
-     * @param tableData
-     * @return
+     * 处理数据
+     * @param record
      * @throws Exception
      */
-    protected abstract boolean process0(TableData tableData) throws Exception;
-
-    /**
-     * 解析数据
-     *
-     * @param record
-     * @return
-     */
-    protected abstract TableData parseTable(UserRecord record);
-
     public void processEvent(UserRecord record) throws Exception {
         TableData tableData = null;
         try {
@@ -159,7 +164,7 @@ public abstract class AbstractEventProcess {
     }
 
     /**
-     * 是否关注个该数据
+     * 是否关注该数据
      *
      * @param tableData
      * @param ruleDataInfo

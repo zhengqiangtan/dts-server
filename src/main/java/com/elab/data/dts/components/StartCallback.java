@@ -28,7 +28,7 @@ public class StartCallback implements ApplicationRunner {
     private Map<String, RecordListener> recordListenerMap;
 
     @Override
-    public void run(ApplicationArguments args) throws Exception {
+    public void run(ApplicationArguments args) {
         Boot.boot(getProperties(dtsProperties), recordListenerMap);
     }
 
@@ -44,9 +44,9 @@ public class StartCallback implements ApplicationRunner {
         properties.setProperty(Names.KAFKA_TOPIC, pros.getKafkaTopic());
         // kafka broker url
         properties.setProperty(Names.KAFKA_BROKER_URL_NAME, pros.getKafkaBrokerUrlName());
+
         // initial checkpoint for first seek(a timestamp to set, eg 1566180200 if you want (Mon Aug 19 10:03:21 CST 2019))
         //long startTimestamp = System.currentTimeMillis() / 1000;
-//        System.out.println("-------->" + startTimestamp);
         if (pros.getInitialCheckpointName() != null) {
             properties.setProperty(Names.INITIAL_CHECKPOINT_NAME, pros.getInitialCheckpointName());
         } else {

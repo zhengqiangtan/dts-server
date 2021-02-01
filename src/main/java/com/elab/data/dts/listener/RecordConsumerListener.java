@@ -42,7 +42,7 @@ public class RecordConsumerListener implements RecordListener {
             // 提交消费位点
             userRecord.commit(String.valueOf(record.getSourceTimestamp()));
         } catch (Exception e) {
-            logger.error("消费失败", e);
+            logger.error("RecordConsumerListener:消费失败", e);
         }
     }
 

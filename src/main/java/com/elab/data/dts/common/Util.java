@@ -13,21 +13,6 @@ import java.util.Properties;
 
 
 public class Util {
-    public static void swallowErrorClose(Closeable target) {
-        try {
-            if (null != target) {
-                target.close();
-            }
-        } catch (Exception e) {
-        }
-    }
-
-    public static void sleepMS(long value) {
-        try {
-            Thread.sleep(value);
-        } catch (Exception e) {
-        }
-    }
 
     public static void mergeSourceKafkaProperties(Properties originProperties, Properties mergeToProperties) {
         originProperties.forEach((k, v) -> {
@@ -37,22 +22,23 @@ public class Util {
                 mergeToProperties.setProperty(toPutKey, (String) v);
             }
         });
-        mergeToProperties.setProperty(SaslConfigs.SASL_JAAS_CONFIG,
-                buildJaasConfig(originProperties.getProperty(Names.SID_NAME), originProperties.getProperty(Names.USER_NAME), originProperties.getProperty(Names.PASSWORD_NAME)));
+        // 如kafka集群启用了SASL_PLAINTEXT认证方式
+        mergeToProperties.setProperty(SaslConfigs.SASL_JAAS_CONFIG, buildJaasConfig(originProperties.getProperty(Names.SID_NAME), originProperties.getProperty(Names.USER_NAME), originProperties.getProperty(Names.PASSWORD_NAME)));
         mergeToProperties.setProperty(SaslConfigs.SASL_MECHANISM, "PLAIN");
         mergeToProperties.setProperty(CommonClientConfigs.SECURITY_PROTOCOL_CONFIG, "SASL_PLAINTEXT");
+
+
         mergeToProperties.setProperty(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, originProperties.getProperty(Names.KAFKA_BROKER_URL_NAME));
         mergeToProperties.setProperty(ConsumerConfig.GROUP_ID_CONFIG, originProperties.getProperty(Names.GROUP_NAME));
-        // disable auto commit
+        // 禁自动提交
         mergeToProperties.setProperty(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, "false");
 
         mergeToProperties.setProperty(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.ByteArrayDeserializer");
         mergeToProperties.setProperty(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.ByteArrayDeserializer");
-        // to let the consumer feel the switch of cluster and reseek the offset by timestamp
+        // 消费者感知kafka集群切换并自动依据timestamp重新消费
         mergeToProperties.setProperty(ConsumerConfig.INTERCEPTOR_CLASSES_CONFIG, ClusterSwitchListener.class.getName());
         mergeToProperties.setProperty(ConsumerConfig.MAX_POLL_RECORDS_CONFIG, originProperties.get(Names.MAX_POLL_RECORDS).toString());
-        mergeToProperties.setProperty(ConsumerConfig.MAX_POLL_INTERVAL_MS_CONFIG, originProperties.get(Names.MAX_POLL_INTERVAL_MS_CONFIG)
-                .toString());
+        mergeToProperties.setProperty(ConsumerConfig.MAX_POLL_INTERVAL_MS_CONFIG, originProperties.get(Names.MAX_POLL_INTERVAL_MS_CONFIG).toString());
     }
 
     public static void require(boolean predict, String errMessage) {
@@ -135,11 +121,20 @@ public class Util {
         return builder.toString();
     }
 
-
-    public static void sleepMs(long ms) {
+    public static void swallowErrorClose(Closeable target) {
         try {
-            Thread.sleep(ms);
+            if (null != target) {
+                target.close();
+            }
         } catch (Exception e) {
+        }
+    }
+
+    public static void sleepMS(long value) {
+        try {
+            Thread.sleep(value);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }

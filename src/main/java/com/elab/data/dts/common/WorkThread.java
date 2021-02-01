@@ -2,7 +2,11 @@ package com.elab.data.dts.common;
 
 import java.io.Closeable;
 
-
+/**
+ * 定义工作线程
+ *
+ * @param <T>
+ */
 public class WorkThread<T extends Runnable & Closeable> {
     private final T r;
     private final Thread worker;
